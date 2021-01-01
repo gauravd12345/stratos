@@ -1,4 +1,5 @@
 import pygame
+import pathlib
 
 pygame.init()
 
@@ -6,7 +7,11 @@ pygame.init()
 screen_width = 480
 screen_height = 480
 mod = (screen_height + screen_width) // 16
+
+# Colors
 YELLOW = (225, 225, 0, 128)
+TAN = (240, 217, 181, 128)
+DARK_TAN = (181, 136, 99, 128)
 
 win = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Chess")
@@ -45,8 +50,9 @@ black_pieces = [pygame.transform.scale(pygame.image.load("img/black_pieces/bP.pn
 
 
 # Creates out the chess board
-def createBoard(board):
+def createBoard(board, validlist):
     win.blit(chessBoard, (0, 0))
+    highlightValid(validlist)
     for i in range(len(board)):
         for j in range(len(board[i])):
 
@@ -73,8 +79,23 @@ def pieceUnderMouse(board):
     x, y = getMousePos()
     return board[x][y]
     
-def hoverRect(board, x, y):
+
+def highlightRect(x, y):
     pygame.draw.rect(win, YELLOW, (y * mod, x * mod, mod, mod))
+    if abs(x - y) % 2 == 0:
+        pygame.draw.rect(win, TAN, (y * mod + 5, x * mod + 5, mod - 10, mod - 10))
+
+    else:
+        pygame.draw.rect(win, DARK_TAN, (y * mod + 5, x * mod + 5, mod - 10, mod - 10))
+
+
+def highlightValid(validlist):
+    if not validlist:
+        return
+
+    for i in range(len(validlist)):
+        highlightRect(validlist[i][0], validlist[i][1])
+
 
 def main():
 
@@ -108,6 +129,7 @@ def main():
     isClicked = False 
     
     curr = 0
+    valid = []
     curr_piece = 0
     curr_x, curr_y = 0, 0
 
@@ -116,7 +138,8 @@ def main():
 
         # Stuff that will run in the background
         
-        createBoard(board) 
+        
+        createBoard(board, valid) 
         
         piece = pieceUnderMouse(board) 
         x, y = getMousePos()    
@@ -139,9 +162,10 @@ def main():
             if event.type == pygame.MOUSEBUTTONUP:
                 if isClicked:
                     board[curr_x][curr_y] = curr_piece
-
-                    # Place the piece
-                    Piece.placePiece(board, curr_x, curr_y, x, y)
+                    if [x, y] in valid:
+                        
+                        # Place the piece
+                        Piece.placePiece(board, curr_x, curr_y, x, y)
                     
 
                 isClicked = False
@@ -170,7 +194,7 @@ def main():
             elif abs(curr_piece) == 6:
                 curr = King(color, board, curr_x, curr_y)
 
-            curr.validMoves()
+            valid = curr.validMoves()
             # Using drag n' drop functionality to move the piece
             Piece.movePiece(curr_piece)
         
@@ -185,7 +209,8 @@ class Piece:
         self.x = x
         self.y = y
 
-
+    
+    # Acts as a getter function
     def getVar(self):
         return self.color, self.board, self.x, self.y
 
@@ -210,43 +235,7 @@ class Pawn(Piece):
     def validMoves(self):
         color, board, x, y = Piece.getVar(self)
         validList = []
-        for z in range(1, 3):
-            if color > 0:
-                new_x = x - z
-            
-            else:
-                new_x = x + z
-
-            if 0 <= new_x <= 7:
-                validList.append([new_x, y])
-                hoverRect(board, new_x, y)
-
-            else:
-                break
-
-class Knight(Piece):
-    def validMoves(self):
-        color, board, x, y = Piece.getVar(self)
-        validList = []
-        for z in range(1, 3):
-            if color > 0:
-                new_x = x - z
-            
-            else:
-                new_x = x + z
-
-            if 0 <= new_x <= 7:
-                validList.append([new_x, y])
-                hoverRect(board, new_x, y)
-
-            else:
-                break
-
-class Bishop(Piece):
-    def validMoves(self):
-        color, board, x, y = Piece.getVar(self)
-        validList = []
-        for z in range(1, x):
+        for z in range(3):
             if color > 0:
                 new_x = x - z
                 new_y = y - z
@@ -255,70 +244,97 @@ class Bishop(Piece):
                 new_x = x + z
                 new_y = y + z
 
-            if 0 <= new_x <= 7 and 0 <= new_y <= 7:
-                validList.append([new_x, new_y])
-                hoverRect(board, new_x, new_y)
+            if 0 <= new_x <= 7:
+                validList.append([new_x, y])
+
+                # Pawn capture functionality
+                if board[new_x][new_y] != 0:
+                    validList.append([new_x, new_y])
+
+                if board[new_x][new_y] != 0:
+                    validList.append([new_x, new_y])
+
+
+            else:
+                break
+        
+        
+
+        return validList
+
+
+class Knight(Piece):
+    def validMoves(self):
+        color, board, x, y = Piece.getVar(self)
+        validList = []
+        for z in range(3):
+            if color > 0:
+                new_x = x - z
+            
+            else:
+                new_x = x + z
+
+            if 0 <= new_x <= 7:
+                validList.append([new_x, y])
 
             else:
                 break
 
-        
+        return validList
+
+
+class Bishop(Piece):
+    def validMoves(self):
+        color, board, x, y = Piece.getVar(self)
+        validList = []
+        for i in range(len(board)):
+            for j in range(len(board[i])):
+                if abs(i - x) == abs(j - y):
+                    validList.append([i, j])
+
+        return validList
+
 
 class Rook(Piece):
     def validMoves(self):
         color, board, x, y = Piece.getVar(self)
         validList = []
-        for z in range(1, 3):
-            if color > 0:
-                new_x = x - z
-            
-            else:
-                new_x = x + z
+        for i in range(len(board)):
+            for j in range(len(board[i])):
+                if i == x or j == y:
+                    validList.append([i, j])
 
-            if 0 <= new_x <= 7:
-                validList.append([new_x, y])
-                hoverRect(board, new_x, y)
+        return validList
 
-            else:
-                break
 
 class Queen(Piece):
     def validMoves(self):
         color, board, x, y = Piece.getVar(self)
         validList = []
-        for z in range(1, 3):
-            if color > 0:
-                new_x = x - z
-            
-            else:
-                new_x = x + z
+        for i in range(len(board)):
+            for j in range(len(board[i])):
+                if (abs(i - x) == abs(j - y)) or (i == x or j == y):
+                    validList.append([i, j])
 
-            if 0 <= new_x <= 7:
-                validList.append([new_x, y])
-                hoverRect(board, new_x, y)
+        return validList
 
-            else:
-                break
 
 class King(Piece):
     def validMoves(self):
         color, board, x, y = Piece.getVar(self)
         validList = []
-        for z in range(1, 3):
-            if color > 0:
-                new_x = x - z
-            
-            else:
-                new_x = x + z
+        cor1, cor2 = x - 1, y - 1
+        for i in range(3):
+            for j in range(3):
+                if 0 <= cor1 <= 7 and 0 <= cor2 <= 7:
+                    validList.append([cor1, cor2])
 
-            if 0 <= new_x <= 7:
-                validList.append([new_x, y])
-                hoverRect(board, new_x, y)
+                cor2 += 1
 
-            else:
-                break
+            cor1 += 1 
+            cor2 = y - 1   
 
-
+        return validList        
 
 # Running the code
 if __name__ == "__main__":

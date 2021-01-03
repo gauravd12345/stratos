@@ -1,14 +1,14 @@
 import pygame
-
 from pygame.constants import K_f, K_r
 from pieces import Piece, Pawn, Knight, Bishop, Rook, Queen, King
 
 pygame.init()
-
+pygame.mixer.init()
 #  Setting up the window
-screen_width = 600
-screen_height = 600
+screen_width = 480
+screen_height = 480
 mod = (screen_height + screen_width) // 16
+chess_sound = pygame.mixer.Sound("sounds/Chess_Move.wav")
 
 # Colors
 RED = (255, 0, 0, 50)
@@ -28,33 +28,19 @@ chessBoard = pygame.transform.scale(pygame.image.load("img/chess_board.png"),
 (screen_width, screen_height));
 
 #  Loading the black and white chess pieces
-white_pieces = [pygame.transform.scale(pygame.image.load("img/white_pieces/wP.png"), 
-                (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/white_pieces/wN.png"), 
-                (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/white_pieces/wB.png"), 
-                (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/white_pieces/wR.png"), 
-                (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/white_pieces/wQ.png"), 
-                (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/white_pieces/wK.png"), 
-                (mod, mod))]
+white_pieces = [pygame.transform.scale(pygame.image.load("img/white_pieces/wP.png"), (mod, mod)),
+                pygame.transform.scale(pygame.image.load("img/white_pieces/wN.png"), (mod, mod)),
+                pygame.transform.scale(pygame.image.load("img/white_pieces/wB.png"), (mod, mod)),
+                pygame.transform.scale(pygame.image.load("img/white_pieces/wR.png"), (mod, mod)),
+                pygame.transform.scale(pygame.image.load("img/white_pieces/wQ.png"), (mod, mod)),
+                pygame.transform.scale(pygame.image.load("img/white_pieces/wK.png"), (mod, mod))]
 
-
-black_pieces = [pygame.transform.scale(pygame.image.load("img/black_pieces/bP.png"), 
-                (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/black_pieces/bN.png"), 
-                (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/black_pieces/bB.png"), 
-                (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/black_pieces/bR.png"), 
-                (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/black_pieces/bQ.png"), 
-                (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/black_pieces/bK.png"), 
-                (mod, mod))]
-
+black_pieces = [pygame.transform.scale(pygame.image.load("img/black_pieces/bP.png"), (mod, mod)),
+                pygame.transform.scale(pygame.image.load("img/black_pieces/bN.png"), (mod, mod)),
+                pygame.transform.scale(pygame.image.load("img/black_pieces/bB.png"), (mod, mod)),
+                pygame.transform.scale(pygame.image.load("img/black_pieces/bR.png"), (mod, mod)),
+                pygame.transform.scale(pygame.image.load("img/black_pieces/bQ.png"), (mod, mod)),
+                pygame.transform.scale(pygame.image.load("img/black_pieces/bK.png"), (mod, mod))]
 
 # Creates out the chess board
 def createBoard(board, validlist):
@@ -118,13 +104,13 @@ def highlightValid(validlist):
 
 def restart(board):
     return [[-4, -2, -3, -5, -6, -3, -2, -4],
-             [-1, -1, -1, -1, -1, -1, -1, -1],
-             [ 0,  0,  0,  0,  0,  0,  0,  0],
-             [ 0,  0,  0,  0,  0,  0,  0,  0],
-             [ 0,  0,  0,  0,  0,  0,  0,  0],
-             [ 0,  0,  0,  0,  0,  0,  0,  0],
-             [ 1,  1,  1,  1,  1,  1,  1,  1],
-             [ 4,  2,  3,  5,  6,  3,  2,  4]]
+            [-1, -1, -1, -1, -1, -1, -1, -1],
+            [ 0,  0,  0,  0,  0,  0,  0,  0],
+            [ 0,  0,  0,  0,  0,  0,  0,  0],
+            [ 0,  0,  0,  0,  0,  0,  0,  0],
+            [ 0,  0,  0,  0,  0,  0,  0,  0],
+            [ 1,  1,  1,  1,  1,  1,  1,  1],
+            [ 4,  2,  3,  5,  6,  3,  2,  4]]
 
 
 def flipBoard(board):
@@ -226,6 +212,7 @@ def main():
                         
                         # Place the piece
                         Piece.placePiece(board, curr_x, curr_y, x, y)
+                        pygame.mixer.Sound.play(chess_sound)
 
         
                 isClicked = False

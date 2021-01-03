@@ -1,0 +1,10 @@
+Things to work on
+
+    Pawn promotion
+    En Passant
+    Castling
+    Check
+    Checkmate
+    Stalemate
+    Piece Movement
+    AI

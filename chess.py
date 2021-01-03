@@ -1,7 +1,7 @@
 import pygame
-import pathlib
 
 from pygame.constants import K_f, K_r
+from pieces import Piece, Pawn, Knight, Bishop, Rook, Queen, King
 
 pygame.init()
 
@@ -87,6 +87,18 @@ def pieceUnderMouse(board):
     return board[x][y]
     
 
+# Moves a piece on the board(Drag and drop animation)
+def movePiece(piece):
+    pos = pygame.mouse.get_pos()
+    if piece > 0:
+        win.blit(white_pieces[piece - 1], 
+            white_pieces[piece - 1].get_rect(center=pos))
+    
+    elif piece < 0:
+        win.blit(black_pieces[abs(piece) - 1], 
+            black_pieces[abs(piece) - 1].get_rect(center=pos))
+
+
 def highlightRect(x, y):
     pygame.draw.rect(win, YELLOW, (y * mod, x * mod, mod, mod))
     if abs(x - y) % 2 == 0:
@@ -109,7 +121,7 @@ def restart(board):
              [-1, -1, -1, -1, -1, -1, -1, -1],
              [ 0,  0,  0,  0,  0,  0,  0,  0],
              [ 0,  0,  0,  0,  0,  0,  0,  0],
-             [ 0,  0,  0,  3,  0,  0,  0,  0],
+             [ 0,  0,  0,  0,  0,  0,  0,  0],
              [ 0,  0,  0,  0,  0,  0,  0,  0],
              [ 1,  1,  1,  1,  1,  1,  1,  1],
              [ 4,  2,  3,  5,  6,  3,  2,  4]]
@@ -160,7 +172,7 @@ def main():
              [-1, -1, -1, -1, -1, -1, -1, -1],
              [ 0,  0,  0,  0,  0,  0,  0,  0],
              [ 0,  0,  0,  0,  0,  0,  0,  0],
-             [ 0,  0,  0,  3,  0,  0,  0,  0],
+             [ 0,  0,  0,  0,  0,  0,  0,  0],
              [ 0,  0,  0,  0,  0,  0,  0,  0],
              [ 1,  1,  1,  1,  1,  1,  1,  1],
              [ 4,  2,  3,  5,  6,  3,  2,  4]]
@@ -178,11 +190,8 @@ def main():
     # Setting a gameloop
     while running:
 
-        # Stuff that will run in the background
-        
-        
-        createBoard(board, valid) 
-        
+        # Stuff that will run in the background    
+        createBoard(board, valid)        
         piece = pieceUnderMouse(board) 
         x, y = getMousePos()    
 
@@ -213,7 +222,6 @@ def main():
                 if isClicked:
                     
                     board[curr_x][curr_y] = curr_piece
-                    print(curr_x, curr_y, x, y)
                     if [x, y] in valid:
                         
                         # Place the piece
@@ -231,146 +239,12 @@ def main():
 
             valid = curr.validMoves()
             # Using drag n' drop functionality to move the piece
-            Piece.movePiece(curr_piece)
+            movePiece(curr_piece)
         
         pygame.display.update()
 
-
-# Setting up a Piece class
-class Piece:
-    def __init__(self, color, board, x, y):
-        self.color = color
-        self.board = board
-        self.x = x
-        self.y = y
-
-    
-    # Acts as a getter function
-    def getVar(self):
-        return self.color, self.board, self.x, self.y
-
-    # Moves a piece on the board(Drag and drop)
-    def movePiece(piece):
-        pos = pygame.mouse.get_pos()
-        if piece > 0:
-            win.blit(white_pieces[piece - 1], 
-                white_pieces[piece - 1].get_rect(center=pos))
-        
-        elif piece < 0:
-            win.blit(black_pieces[abs(piece) - 1], 
-                black_pieces[abs(piece) - 1].get_rect(center=pos))
-
-
-    # Places a piece on the board
-    def placePiece(board, x1, y1, x2, y2):
-        board[x2][y2], board[x1][y1] = board[x1][y1], 0
-
-
-class Pawn(Piece):
-
-    # Generates valid moves for a pawn
-    def validMoves(self):
-        # Gets info about pawn at (x, y)
-        color, board, x, y = Piece.getVar(self)
-
-        # Checking if its positioned at original spot/hasn't moved yet
-        validList = []
-        if x == 1 or x == 6:
-            end = 3
-        
-        else:
-            end = 2
-
-        for z in range(1, end):
-
-            # Only checking for vertical moves
-            if color > 0:
-                new_x = x - z
-            
-            else:
-                new_x = x + z
-
-            if 0 <= new_x <= 7 and board[new_x][y] == 0:
-                validList.append([new_x, y])
-
-            else:
-                break
-        
-        # Pawn capture functionality(checks left and right positions)
-        if board[x - color][y - 1] * color < 0:
-            validList.append([x - color, y - 1])
-
-        if board[x - color][y + 1] * color < 0:
-            validList.append([x - color, y + 1])
-
-        return validList
-
-
-class Knight(Piece):
-    def validMoves(self):
-        color, board, x, y = Piece.getVar(self)
-        validList = []
-        
-
-        return validList
-
-
-class Bishop(Piece):
-    def validMoves(self):
-        color, board, x, y = Piece.getVar(self)
-        validList = []
-        for i in range(len(board)):
-            for j in range(len(board[i])):
-                if abs(i - x) == abs(j - y):
-                    if [i, j] != [x, y]:
-                        validList.append([i, j])
-
-        return validList
-
-
-class Rook(Piece):
-    def validMoves(self):
-        color, board, x, y = Piece.getVar(self)
-        validList = []
-        for i in range(len(board)):
-            for j in range(len(board[i])):
-                if i == x or j == y:
-                    if [i, j] != [x, y]:
-                        validList.append([i, j])
-
-        return validList
-
-
-class Queen(Piece):
-    def validMoves(self):
-        color, board, x, y = Piece.getVar(self)
-        b = Bishop(color, board, x, y)
-        r = Rook(color, board, x, y)
-
-        return b.validMoves() + r.validMoves()
-
-
-class King(Piece):
-    def validMoves(self):
-        color, board, x, y = Piece.getVar(self)
-        validList = []
-        cor1, cor2 = x - 1, y - 1
-        for i in range(3):
-            for j in range(3):
-                if 0 <= cor1 <= 7 and 0 <= cor2 <= 7: 
-                    if board[cor1][cor2] * color <= 0:
-                        if [cor1, cor2] != [x, y]:
-                            validList.append([cor1, cor2])
-
-                cor2 += 1
-
-            cor1 += 1 
-            cor2 = y - 1   
-
-        return validList        
 
 # Running the code
 if __name__ == "__main__":
     main()
     pygame.quit()
-   

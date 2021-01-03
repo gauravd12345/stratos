@@ -5,8 +5,8 @@ from pieces import Piece, Pawn, Knight, Bishop, Rook, Queen, King
 pygame.init()
 pygame.mixer.init()
 #  Setting up the window
-screen_width = 480
-screen_height = 480
+screen_width = 600
+screen_height = 600
 mod = (screen_height + screen_width) // 16
 chess_sound = pygame.mixer.Sound("sounds/Chess_Move.wav")
 
@@ -24,23 +24,23 @@ win = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Chess")
 
 #  Loading the chess board
-chessBoard = pygame.transform.scale(pygame.image.load("img/chess_board.png"), 
-(screen_width, screen_height));
+chessBoard = pygame.image.load("img/chess_board.png")
+
 
 #  Loading the black and white chess pieces
-white_pieces = [pygame.transform.scale(pygame.image.load("img/white_pieces/wP.png"), (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/white_pieces/wN.png"), (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/white_pieces/wB.png"), (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/white_pieces/wR.png"), (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/white_pieces/wQ.png"), (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/white_pieces/wK.png"), (mod, mod))]
+white_pieces = [pygame.image.load("img/white_pieces/wP.png"),
+                pygame.image.load("img/white_pieces/wN.png"),
+                pygame.image.load("img/white_pieces/wB.png"),
+                pygame.image.load("img/white_pieces/wR.png"),
+                pygame.image.load("img/white_pieces/wQ.png"),
+                pygame.image.load("img/white_pieces/wK.png")]
 
-black_pieces = [pygame.transform.scale(pygame.image.load("img/black_pieces/bP.png"), (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/black_pieces/bN.png"), (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/black_pieces/bB.png"), (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/black_pieces/bR.png"), (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/black_pieces/bQ.png"), (mod, mod)),
-                pygame.transform.scale(pygame.image.load("img/black_pieces/bK.png"), (mod, mod))]
+black_pieces = [pygame.image.load("img/black_pieces/bP.png"),
+                pygame.image.load("img/black_pieces/bN.png"),
+                pygame.image.load("img/black_pieces/bB.png"),
+                pygame.image.load("img/black_pieces/bR.png"), 
+                pygame.image.load("img/black_pieces/bQ.png"),
+                pygame.image.load("img/black_pieces/bK.png")]
 
 # Creates out the chess board
 def createBoard(board, validlist):

@@ -156,6 +156,32 @@ def availableBoxes(board):
 
             elif piece < 0: 
                 pygame.draw.rect(win, WHITE, (j * mod, i * mod, mod, mod))
+
+
+# Finds all the valid positions for white
+def validWhite(color, board):
+    white = []
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+            if board[i][j] > 0:
+                curr = createPiece(color, board, board[i][j], i, j)
+                white += curr.validMoves()
+
+    return white
+
+
+# Finds all the valid positions for black
+def validBlack(color, board):
+    white = []
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+            if board[i][j] < 0:
+                curr = createPiece(color, board, board[i][j], i, j)
+                white += curr.validMoves()
+
+    return white
+
+
 '''
 def promoteBox(color):
     new_y = int((mod // 2) * 7)
@@ -219,7 +245,8 @@ def main():
     # Setting a gameloop
     while running:
 
-        # Stuff that will run in the background        
+        # Stuff that will run in the background   
+        createBoard(board, valid)     
         piece = pieceUnderMouse(board) 
         if curr_piece != 0:
             color = curr_piece // abs(curr_piece)
@@ -262,7 +289,7 @@ def main():
                 
                 isClicked = False
                 
-        createBoard(board, valid)         
+          
         # If the mouse button is clicked
         if isClicked: 
             board[curr_x][curr_y] = 0

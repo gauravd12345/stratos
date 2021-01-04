@@ -45,6 +45,7 @@ black_pieces = [pygame.image.load("img/black_pieces/bP.png"),
 # Creates out the chess board
 def createBoard(board, validlist):
     win.blit(chessBoard, (0, 0))
+    #availableBoxes(board)
     highlightValid(validlist)
     for i in range(len(board)):
         for j in range(len(board[i])):
@@ -143,6 +144,18 @@ def canPromote(x):
     
     return False
 
+
+def availableBoxes(board):
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+
+            # Checks if the piece is black or white
+            piece = board[i][j]
+            if piece > 0: 
+                pygame.draw.rect(win, BLACK, (j * mod, i * mod, mod, mod))
+
+            elif piece < 0: 
+                pygame.draw.rect(win, WHITE, (j * mod, i * mod, mod, mod))
 '''
 def promoteBox(color):
     new_y = int((mod // 2) * 7)
@@ -206,11 +219,10 @@ def main():
     # Setting a gameloop
     while running:
 
-        # Stuff that will run in the background  
-
-        createBoard(board, valid)   
+        # Stuff that will run in the background        
         piece = pieceUnderMouse(board) 
-        color = curr_piece // abs(curr_piece)
+        if curr_piece != 0:
+            color = curr_piece // abs(curr_piece)
         x, y = getMousePos()    
 
         for event in pygame.event.get():
@@ -244,12 +256,13 @@ def main():
                         # Place the piece
                         Piece.placePiece(board, curr_x, curr_y, x, y)
                         pygame.mixer.Sound.play(chess_sound)
+                        curr_piece = board[x][y]
                         
 
-        
+                
                 isClicked = False
                 
-                
+        createBoard(board, valid)         
         # If the mouse button is clicked
         if isClicked: 
             board[curr_x][curr_y] = 0
@@ -266,6 +279,7 @@ def main():
                 if canPromote(x):
                     board[x][y] = pr * color
                     curr_piece = board[x][y]
+
 
         pygame.display.update()
 

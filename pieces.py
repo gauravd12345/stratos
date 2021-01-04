@@ -1,5 +1,3 @@
-
-
 # Setting up a Piece class
 class Piece:
     def __init__(self, color, board, x, y):
@@ -9,7 +7,7 @@ class Piece:
         self.y = y
 
     
-    # Acts as a getter function
+    # Getter function
     def getVar(self):
         return self.color, self.board, self.x, self.y
 
@@ -62,7 +60,6 @@ class Pawn(Piece):
 
         return validList
 
-
 class Knight(Piece):
     def validMoves(self):
         color, board, x, y = Piece.getVar(self)
@@ -84,8 +81,10 @@ class Bishop(Piece):
     def validMoves(self):
         color, board, x, y = Piece.getVar(self)
         validList = []
+
         try:
-            for i in range(y + 1):
+            # Top Left Diagonal
+            for i in range(x + 1):
                 if [x, y] != [x - i, y - i]:
                     result = board[x - i][y - i] * color
                     if result <= 0:
@@ -96,7 +95,25 @@ class Bishop(Piece):
                     else:
                         break
 
-            for i in range(y + 1):         
+        except:
+            pass
+        try:            
+            # Top Right Diagonal
+            for i in range(x + 1):     
+                if [x, y] != [x - i, y + i]:
+                    result = board[x - i][y + i] * color
+                    if result <= 0:
+                        validList.append([x - i, y + i])
+                        if result < 0:
+                            break
+
+                    else:
+                        break
+        except:
+            pass
+        try:
+            # Bottom Left Diagonal
+            for i in range(8 - x):         
                 if [x, y] != [x + i, y - i]:
                     result = board[x + i][y - i] * color
                     if result <= 0:
@@ -107,18 +124,11 @@ class Bishop(Piece):
                     else:
                         break
 
-            for i in range(8 - y):
-                result = board[x - i][y + i] * color
-                if [x, y] != [x - i, y + i]:
-                    if result <= 0:
-                        validList.append([x - i, y + i])
-                        if result < 0:
-                            break
-
-                    else:
-                        break
-
-            for i in range(8 - y):
+        except:
+            pass    
+        try:    
+            # Bottom Right Diagonal
+            for i in range(8 - x):
                 result = board[x + i][y + i] * color
                 if [x, y] != [x + i, y + i]:
                     if result <= 0:
@@ -130,7 +140,6 @@ class Bishop(Piece):
                         break
         except:
             pass
-
         return validList
 
 
@@ -138,53 +147,54 @@ class Rook(Piece):
     def validMoves(self):
         color, board, x, y = Piece.getVar(self)
         validList = []
-        try:
-            for i in range(y + 1):
-                if [x, y] != [x, y - i]:
-                    result = board[x][y - i] * color
-                    if result <= 0:
-                        validList.append([x, y - i])
-                        if result < 0:               
-                            break
 
-                    else:
+        # Left Horizontal
+        for i in range(y + 1):
+            if [x, y] != [x, y - i]:
+                result = board[x][y - i] * color
+                if result <= 0:
+                    validList.append([x, y - i])
+                    if result < 0:               
                         break
 
-            for i in range(x + 1):
-                if [x, y] != [x - i, y]:
-                    result = board[x - i][y] * color
-                    if result <= 0:
-                        validList.append([x - i, y])
-                        if result < 0:               
-                            break
-
-                    else:
-                        break
-            
-            for i in range(8 - y):
-                if [x, y] != [x, y + i]:
-                    result = board[x][y + i] * color
-                    if result <= 0:
-                        validList.append([x, y + i])
-                        if result < 0:               
-                            break
-
-                    else:
+                else:
+                    break
+                
+        # Right Horizontal
+        for i in range(8 - y):
+            if [x, y] != [x, y + i]:
+                result = board[x][y + i] * color
+                if result <= 0:
+                    validList.append([x, y + i])
+                    if result < 0:               
                         break
 
-            for i in range(8 - x):
-                if [x, y] != [x + i, y]:
-                    result = board[x + i][y] * color
-                    if result <= 0:
-                        validList.append([x + i, y])
-                        if result < 0:               
-                            break
+                else:
+                    break
 
-                    else:
+        # Top Vertical
+        for i in range(x + 1):
+            if [x, y] != [x - i, y]:
+                result = board[x - i][y] * color
+                if result <= 0:
+                    validList.append([x - i, y])
+                    if result < 0:               
                         break
 
-        except:
-            pass
+                else:
+                    break
+
+        # Bottom Vertical
+        for i in range(8 - x):
+            if [x, y] != [x + i, y]:
+                result = board[x + i][y] * color
+                if result <= 0:
+                    validList.append([x + i, y])
+                    if result < 0:               
+                        break
+
+                else:
+                    break
 
         return validList
 
@@ -216,4 +226,5 @@ class King(Piece):
             cor2 = y - 1   
 
         return validList        
+
 

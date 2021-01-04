@@ -137,22 +137,51 @@ def createPiece(color, board, piece, x, y):
     return pieceMap[piece]
 
 
+def canPromote(x):
+    if x == 0 or x == 7:
+        return True
+    
+    return False
+
+'''
+def promoteBox(color):
+    new_y = int((mod // 2) * 7)
+    off = (mod * 8) // 60
+    dim = mod + 2 * off
+
+    
+    # Drawing the selectable promotions
+    for i in range(4):
+        pygame.draw.rect(win, WHITE, ((2 * i * mod) + mod // 2 - off, 
+        new_y - off, dim, dim))
+        if color > 0: 
+            win.blit(white_pieces[i + 1], ((2 * i * mod) + mod // 2,
+             new_y)) 
+
+        elif color < 0: 
+            win.blit(black_pieces[i + 1], ((2 * i * mod) + mod // 2, 
+            new_y))
+
+'''
+
+
 def main():
+    '''
+      Representation of the chess board in an array
+      Each number in the array represents a piece:
+       
+           0 - Empty Space
+           1 - Pawn
+           2 - Knight
+           3 - Bishop
+           4 - Rook
+           5 - Queen
+           6 - King
+    
+      Positive values indicate white pieces
+      Negative values indicate black pieces
 
-    #  Representation of the chess board in an array
-    #  Each number in the array represents a piece:
-    #   
-    #       0 - Empty Space
-    #       1 - Pawn
-    #       2 - Knight
-    #       3 - Bishop
-    #       4 - Rook
-    #       5 - Queen
-    #       6 - King
-    #
-    #  Positive values indicate white pieces
-    #  Negative values indicate black pieces
-
+    '''
 
     board = [[-4, -2, -3, -5, -6, -3, -2, -4],
              [-1, -1, -1, -1, -1, -1, -1, -1],
@@ -169,16 +198,19 @@ def main():
     isClicked = False 
     
     curr = 0
+    color = 1
     valid = []
-    curr_piece = 0
-    curr_x, curr_y = 0, 0
+    curr_piece = 10
+    curr_x, curr_y = 10, 10
 
     # Setting a gameloop
     while running:
 
-        # Stuff that will run in the background    
-        createBoard(board, valid)        
+        # Stuff that will run in the background  
+
+        createBoard(board, valid)   
         piece = pieceUnderMouse(board) 
+        color = curr_piece // abs(curr_piece)
         x, y = getMousePos()    
 
         for event in pygame.event.get():
@@ -206,28 +238,35 @@ def main():
             # Checking if the mouse has been released
             if event.type == pygame.MOUSEBUTTONUP:
                 if isClicked:
-                    
                     board[curr_x][curr_y] = curr_piece
                     if [x, y] in valid:
                         
                         # Place the piece
                         Piece.placePiece(board, curr_x, curr_y, x, y)
                         pygame.mixer.Sound.play(chess_sound)
+                        
 
         
                 isClicked = False
                 
                 
         # If the mouse button is clicked
-        if isClicked:
+        if isClicked: 
             board[curr_x][curr_y] = 0
-            color = curr_piece // abs(curr_piece)
-            curr = createPiece(color, board, curr_piece, curr_x, curr_y)
-
+            curr = createPiece(color, board, curr_piece, curr_x, curr_y)       
             valid = curr.validMoves()
+
             # Using drag n' drop functionality to move the piece
             movePiece(curr_piece)
-        
+
+        else:
+            # Pawn Promotion functionality
+            if abs(curr_piece) == 1 and curr_piece == piece:
+                pr = 5
+                if canPromote(x):
+                    board[x][y] = pr * color
+                    curr_piece = board[x][y]
+
         pygame.display.update()
 
 

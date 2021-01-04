@@ -1,6 +1,6 @@
 Things to work on
 
-    Pawn promotion
+    Pawn promotion 
     En Passant
     Castling
     Check

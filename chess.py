@@ -42,6 +42,11 @@ black_pieces = [pygame.image.load("img/black_pieces/bP.png"),
                 pygame.image.load("img/black_pieces/bQ.png"),
                 pygame.image.load("img/black_pieces/bK.png")]
 
+
+
+white_king = [7, 4]
+black_king = [0, 4]
+
 # Creates out the chess board
 def createBoard(board, validlist):
     win.blit(chessBoard, (0, 0))
@@ -100,7 +105,7 @@ def highlightValid(validlist):
         return
 
     for i in range(len(validlist)):
-        highlightRect(validlist[i][0], validlist[i][1])
+        highlightRect(validlist[i][2], validlist[i][3])
 
 
 def restart(board):
@@ -144,6 +149,14 @@ def canPromote(x):
     
     return False
 
+# Reduces validlist[0:3] to validlist[2:3]
+# (It is done so due to how the program is made)
+def reduce(validlist):
+    newList = []
+    for i in validlist:
+        newList.append([i[2], i[3]])
+
+    return newList
 
 def availableBoxes(board):
     for i in range(len(board)):
@@ -158,31 +171,43 @@ def availableBoxes(board):
                 pygame.draw.rect(win, WHITE, (j * mod, i * mod, mod, mod))
 
 
-# Finds all the valid positions for white
+# Finds all the squares "protected" by white
 def validWhite(color, board):
     white = []
     for i in range(len(board)):
         for j in range(len(board[i])):
             if board[i][j] > 0:
                 curr = createPiece(color, board, board[i][j], i, j)
-                white += curr.validMoves()
+                white += reduce(curr.validMoves())
 
     return white
 
 
-# Finds all the valid positions for black
+# Finds all the squares "protected" by black
 def validBlack(color, board):
-    white = []
+    black = []
     for i in range(len(board)):
         for j in range(len(board[i])):
             if board[i][j] < 0:
                 curr = createPiece(color, board, board[i][j], i, j)
-                white += curr.validMoves()
+                black += reduce(curr.validMoves())
 
-    return white
+    return black
+
+# Checks if either of the kings are in check
+def check(color, board, white_king, black_king):
+    if black_king in validWhite(color, board):
+        return True
+
+    elif white_king in validBlack(color, board):
+        return True
+
+    return False
+
 
 
 '''
+# Creates a short "animation" for promotion
 def promoteBox(color):
     new_y = int((mod // 2) * 7)
     off = (mod * 8) // 60
@@ -204,7 +229,7 @@ def promoteBox(color):
 '''
 
 
-def main():
+def main(white_king, black_king):
     '''
       Representation of the chess board in an array
       Each number in the array represents a piece:
@@ -278,8 +303,15 @@ def main():
             if event.type == pygame.MOUSEBUTTONUP:
                 if isClicked:
                     board[curr_x][curr_y] = curr_piece
-                    if [x, y] in valid:
-                        
+                    if [curr_x, curr_y, x, y] in valid:
+                        if abs(curr_piece) == 6:
+                            if curr_piece > 0:
+                                white_king = [x, y]
+
+                            else:
+                                black_king = [x, y]
+
+
                         # Place the piece
                         Piece.placePiece(board, curr_x, curr_y, x, y)
                         pygame.mixer.Sound.play(chess_sound)
@@ -288,8 +320,10 @@ def main():
 
                 
                 isClicked = False
-                
-          
+ 
+        if check(color, board, white_king, black_king):
+            print("\nKing in Check")
+
         # If the mouse button is clicked
         if isClicked: 
             board[curr_x][curr_y] = 0
@@ -307,11 +341,10 @@ def main():
                     board[x][y] = pr * color
                     curr_piece = board[x][y]
 
-
         pygame.display.update()
 
 
 # Running the code
 if __name__ == "__main__":
-    main()
+    main(white_king, black_king)
     pygame.quit()

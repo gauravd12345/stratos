@@ -42,7 +42,7 @@ class Pawn(Piece):
                 new_x = x + z
 
             if 0 <= new_x <= 7 and board[new_x][y] == 0:
-                validList.append([new_x, y])
+                validList.append([x, y, new_x, y])
 
             else:
                 break
@@ -50,10 +50,10 @@ class Pawn(Piece):
         # Pawn capture functionality(checks left and right positions)
         try:
             if board[x - color][y - 1] * color < 0:
-                validList.append([x - color, y - 1])
+                validList.append([x, y, x - color, y - 1])
 
             if board[x - color][y + 1] * color < 0:
-                validList.append([x - color, y + 1])
+                validList.append([x, y, x - color, y + 1])
 
         except:
             pass
@@ -68,11 +68,11 @@ class Knight(Piece):
             for j in range(len(board[i])):
                 if abs(i - x) == 1 and abs(j - y) == 2:
                     if board[i][j] * color <= 0:
-                        validList.append([i, j])
+                        validList.append([x, y, i, j])
 
                 elif abs(i - x) == 2 and abs(j - y) == 1:
                     if board[i][j] * color <= 0:
-                        validList.append([i, j])
+                        validList.append([x, y, i, j])
 
         return validList
 
@@ -88,7 +88,7 @@ class Bishop(Piece):
                 if [x, y] != [x - i, y - i]:
                     result = board[x - i][y - i] * color
                     if result <= 0:
-                        validList.append([x - i, y - i])
+                        validList.append([x, y, x - i, y - i])
                         if result < 0:               
                             break
 
@@ -103,7 +103,7 @@ class Bishop(Piece):
                 if [x, y] != [x - i, y + i]:
                     result = board[x - i][y + i] * color
                     if result <= 0:
-                        validList.append([x - i, y + i])
+                        validList.append([x, y, x - i, y + i])
                         if result < 0:
                             break
 
@@ -117,7 +117,7 @@ class Bishop(Piece):
                 if [x, y] != [x + i, y - i]:
                     result = board[x + i][y - i] * color
                     if result <= 0:
-                        validList.append([x + i, y - i])
+                        validList.append([x, y, x + i, y - i])
                         if result < 0:
                             break
 
@@ -132,7 +132,7 @@ class Bishop(Piece):
                 result = board[x + i][y + i] * color
                 if [x, y] != [x + i, y + i]:
                     if result <= 0:
-                        validList.append([x + i, y + i])
+                        validList.append([x, y, x + i, y + i])
                         if result < 0:
                             break
 
@@ -153,7 +153,7 @@ class Rook(Piece):
             if [x, y] != [x, y - i]:
                 result = board[x][y - i] * color
                 if result <= 0:
-                    validList.append([x, y - i])
+                    validList.append([x, y, x, y - i])
                     if result < 0:               
                         break
 
@@ -165,7 +165,7 @@ class Rook(Piece):
             if [x, y] != [x, y + i]:
                 result = board[x][y + i] * color
                 if result <= 0:
-                    validList.append([x, y + i])
+                    validList.append([x, y, x, y + i])
                     if result < 0:               
                         break
 
@@ -177,7 +177,7 @@ class Rook(Piece):
             if [x, y] != [x - i, y]:
                 result = board[x - i][y] * color
                 if result <= 0:
-                    validList.append([x - i, y])
+                    validList.append([x, y, x - i, y])
                     if result < 0:               
                         break
 
@@ -189,7 +189,7 @@ class Rook(Piece):
             if [x, y] != [x + i, y]:
                 result = board[x + i][y] * color
                 if result <= 0:
-                    validList.append([x + i, y])
+                    validList.append([x, y, x + i, y])
                     if result < 0:               
                         break
 
@@ -218,7 +218,7 @@ class King(Piece):
                 if 0 <= cor1 <= 7 and 0 <= cor2 <= 7: 
                     if board[cor1][cor2] * color <= 0:
                         if [cor1, cor2] != [x, y]:
-                            validList.append([cor1, cor2])
+                            validList.append([x, y, cor1, cor2])
 
                 cor2 += 1
 

@@ -311,11 +311,12 @@ def main(white_king, black_king):
                 #print(color * counter)
                 
                 if isClicked:
-                    board[curr_x][curr_y] = curr_piece           
+                    board[curr_x][curr_y] = curr_piece 
+                    lastPiece = board[x][y]          
                     if [curr_x, curr_y, x, y] in valid and color * counter > 0:
                         
                         # Place the piece
-                        Piece.placePiece(board, curr_x, curr_y, x, y)
+                        Piece.placePiece(board, curr_x, curr_y, x, y, 0)
                         
                         if abs(curr_piece) == 6:
                             if color > 0:
@@ -338,7 +339,7 @@ def main(white_king, black_king):
                             
                             print("invalid")
                             # Reverses the move if a side is putting themselves in check
-                            Piece.placePiece(board, x, y, curr_x, curr_y)
+                            Piece.placePiece(board, x, y, curr_x, curr_y, lastPiece)
                             if abs(curr_piece) == 6:
                                 if color > 0:
                                     white_king = [x, y]

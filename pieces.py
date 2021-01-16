@@ -15,8 +15,8 @@ class Piece:
 
 
     # Places a piece on the board
-    def placePiece(board, x1, y1, x2, y2):
-        board[x2][y2], board[x1][y1] = board[x1][y1], 0
+    def placePiece(board, x1, y1, x2, y2, piece):
+        board[x2][y2], board[x1][y1] = board[x1][y1], piece
 
 
 class Pawn(Piece):

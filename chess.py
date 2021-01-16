@@ -184,53 +184,6 @@ def check(board, white_king, black_king):
 
     return 0
 
-def checkmate(inCheck, board, white_king, black_king):    
-    if inCheck > 0:
-        val = validWhite(board)[::-1]
-    
-    else:
-        val = validBlack(board)[::-1]
-
-    count = 0
-    # Looping through all the possible moves
-    for i in val:   
-        curr_x, curr_y, x, y = i
-        lastPiece = board[x][y]
-        print(board, "\n")
-        #print(curr_x, curr_y, x, y, lastPiece)
-        board[x][y], board[curr_x][curr_y] = board[curr_x][curr_y], 0
-        if abs(board[curr_x][curr_y]) == 6:
-            if inCheck > 0:
-                white_king = [x, y]
-
-            else:
-                black_king = [x, y]
-
-    
-        
-        inCheck = check(board, white_king, black_king)
-        if inCheck != 0:
-            count += 1
-            #print(i, black_king)
-
-            
-
-        if abs(board[curr_x][curr_y]) == 6:
-            if inCheck > 0:
-                white_king = [curr_x, curr_y]
-
-            else:
-                black_king = [curr_x, curr_y]
-            
-        Piece.placePiece(board, x, y, curr_x, curr_y, lastPiece)
-
-    # Reseting the king's positions
-    print(count, len(val))
-    if count == len(val):
-        return False
-
-    else:
-        return True
     
 '''
 # Creates a short "animation" for promotion

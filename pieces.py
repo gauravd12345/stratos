@@ -5,11 +5,7 @@ class Piece:
         self.board = board
         self.x = x
         self.y = y
-        
-
-
     
-    # Getter function
     def getVar(self):
         return self.color, self.board, self.x, self.y
 
@@ -262,5 +258,3 @@ class King(Piece):
             cor2 = y - 1   
 
         return validList        
-
-

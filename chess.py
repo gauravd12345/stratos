@@ -4,6 +4,7 @@ from pieces import Piece, Pawn, Knight, Bishop, Rook, Queen, King
 
 pygame.init()
 pygame.mixer.init()
+
 #  Setting up the window
 screen_width = 600
 screen_height = 600
@@ -50,7 +51,6 @@ black_king = [0, 4]
 # Creates out the chess board
 def createBoard(board, validlist):
     win.blit(chessBoard, (0, 0))
-    #availableBoxes(board)
     highlightValid(validlist)
     for i in range(len(board)):
         for j in range(len(board[i])):
@@ -126,8 +126,7 @@ def canPromote(x):
     
     return False
 
-# Reduces validlist[0:3] to validlist[2:3]
-# (It is done so due to how the program is made)
+
 def reduce(validlist):
     newList = []
     for i in validlist:
@@ -320,8 +319,6 @@ def main(white_king, black_king):
                     
             # Checking if the mouse has been released
             if event.type == pygame.MOUSEBUTTONUP:
-                #print(valid, [curr_x, curr_y, x, y])
-                #print(color * counter)
                 
                 if isClicked:
                     board[curr_x][curr_y] = curr_piece 
@@ -338,9 +335,6 @@ def main(white_king, black_king):
                             else:
                                 black_king = [x, y]
                                 
-                        
-                        
-
                         inCheck = check(board, white_king, black_king) 
                         counter *= -1
 
@@ -364,8 +358,6 @@ def main(white_king, black_king):
                         print("did not execute")
 
                 isClicked = False
-                        
- 
         
         # If the mouse button is clicked
         if isClicked:    

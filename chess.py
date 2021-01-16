@@ -1,6 +1,5 @@
 import pygame
-from pygame.constants import K_f, K_r
-from pygame.display import update
+import sys
 from pieces import Piece, Pawn, Knight, Bishop, Rook, Queen, King
 
 pygame.init()
@@ -108,29 +107,6 @@ def highlightValid(validlist):
     for i in range(len(validlist)):
         highlightRect(validlist[i][2], validlist[i][3])
 
-"""
-def restart(board):
-    return [[-4, -2, -3, -5, -6, -3, -2, -4],
-            [-1, -1, -1, -1, -1, -1, -1, -1],
-            [ 0,  0,  0,  0,  0,  0,  0,  0],
-            [ 0,  0,  0,  0,  0,  0,  0,  0],
-            [ 0,  0,  0,  0,  0,  0,  0,  0],
-            [ 0,  0,  0,  0,  0,  0,  0,  0],
-            [ 1,  1,  1,  1,  1,  1,  1,  1],
-            [ 4,  2,  3,  5,  6,  3,  2,  4]]
-
-
-def flipBoard(board):
-    newBoard = []
-    for i in range(len(board)):
-        newRow = []
-        for j in range(len(board[i])):
-            newRow.append(board[7 - i][7 - j])
-
-        newBoard.append(newRow)
-
-    board = newBoard
-"""
 
 def createPiece(board, piece, x, y):
     piece = abs(piece)
@@ -182,7 +158,7 @@ def validWhite(board):
                 curr = createPiece(board, board[i][j], i, j)
                 white += curr.validMoves()
                 
-    print("White: \n", len(white), white)
+    #print("White: \n", len(white), white)
     return white
 
 
@@ -195,7 +171,7 @@ def validBlack(board):
                 curr = createPiece(board, board[i][j], i, j)
                 black += curr.validMoves()
 
-    print("Black: \n", len(black), black, "\n\n")
+    #print("Black: \n", len(black), black, "\n\n")
     return black
 
 
@@ -209,7 +185,52 @@ def check(board, white_king, black_king):
 
     return 0
 
+def checkmate(inCheck, board, white_king, black_king):    
+    white_kingPos = tuple(white_king)
+    black_kingPos = tuple(black_king)
+    if inCheck > 0:
+        val = validWhite(board)[::-1]
 
+    else:
+        val = validBlack(board)[::-1]
+
+    count = 0
+    # Looping through all the possible moves
+    for i in val:
+        lastPiece = board[i[2]][i[3]]
+        if abs(board[i[0]][i[1]]) == 6:
+            if inCheck > 0:
+                white_king = [i[2], i[3]]
+
+            else:
+                black_king = [i[2], i[3]]
+
+        Piece.placePiece(board, i[0], i[1], i[2], i[3], 0)
+
+        inCheck = check(board, white_king, black_king)
+        if inCheck != 0:
+            count += 1
+    
+
+        if abs(board[i[0]][i[1]]) == 6:
+            if inCheck > 0:
+                white_king = white_kingPos
+
+            else:
+                black_king = black_kingPos
+            
+        Piece.placePiece(board, i[2], i[3], i[0], i[1], lastPiece)
+
+    # Reseting the king's positions
+    white_king = white_kingPos
+    black_king = black_kingPos
+
+    if count == len(val):
+        return False
+
+    else:
+        return True
+    
 '''
 # Creates a short "animation" for promotion
 def promoteBox(color):
@@ -283,14 +304,6 @@ def main(white_king, black_king):
         x, y = getMousePos() 
 
         for event in pygame.event.get():
-            state = pygame.key.get_pressed()
-            """
-            if state[K_r]:
-                board = restart(board)
-
-            if state[K_f]:
-                flipBoard(board)
-            """    
 
             if event.type == pygame.QUIT:
                 running = False
@@ -331,28 +344,27 @@ def main(white_king, black_king):
                         inCheck = check(board, white_king, black_king) 
                         counter *= -1
 
-                        if inCheck == 0:
-                            pygame.mixer.Sound.play(chess_sound)
-                            curr_piece = board[x][y]
-                        
-                        else:
-                            
-                            print("invalid")
-                            # Reverses the move if a side is putting themselves in check
-                            Piece.placePiece(board, x, y, curr_x, curr_y, lastPiece)
-                            if abs(curr_piece) == 6:
-                                if color > 0:
-                                    white_king = [x, y]
+                        if inCheck != 0:
+                            print("King in check")
+                            ch = checkmate(inCheck, board, white_king, black_king)
+                            if not ch:
+                                print("CHECKMATE")
+                                sys.exit()
 
-                                else:
-                                    black_king = [x, y]
+                        if color == inCheck:
+                            Piece.placePiece(board, x, y, curr_x, curr_y, lastPiece)
                             counter *= -1
 
+                        else:
+                            pygame.mixer.Sound.play(chess_sound)
+                            curr_piece = board[x][y]
 
                         
                     else:
                         print("did not execute")
+
                 isClicked = False
+                        
  
         
         # If the mouse button is clicked

@@ -51,11 +51,13 @@ class Pawn(Piece):
         
         # Pawn capture functionality(checks left and right positions)
         try:
-            if board[x - color][y - 1] * color < 0:
-                validList.append([x, y, x - color, y - 1])
-
-            if board[x - color][y + 1] * color < 0:
-                validList.append([x, y, x - color, y + 1])
+            if x - color > 0:
+                if y - 1 > 0:
+                    if board[x - color][y - 1] * color < 0:
+                        validList.append([x, y, x - color, y - 1])
+                if y + 1 > 0:
+                    if board[x - color][y + 1] * color < 0:
+                        validList.append([x, y, x - color, y + 1])
 
         except:
             pass
@@ -109,7 +111,6 @@ class Bishop(Piece):
                 if [x, y] != [x - i, y + i]:
                     if x - i >= 0 and y + i >= 0:
                         result = board[x - i][y + i] * color
-                        print(result)
                         if result <= 0:
                             validList.append([x, y, x - i, y + i])
                             if result < 0:

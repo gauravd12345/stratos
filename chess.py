@@ -185,44 +185,46 @@ def check(board, white_king, black_king):
     return 0
 
 def checkmate(inCheck, board, white_king, black_king):    
-    white_kingPos = tuple(white_king)
-    black_kingPos = tuple(black_king)
     if inCheck > 0:
-        val = validWhite(board)
-
+        val = validWhite(board)[::-1]
+    
     else:
-        val = validBlack(board)
+        val = validBlack(board)[::-1]
 
     count = 0
     # Looping through all the possible moves
-    for i in val:
-        lastPiece = board[i[2]][i[3]]
-        if abs(board[i[0]][i[1]]) == 6:
+    for i in val:   
+        curr_x, curr_y, x, y = i
+        lastPiece = board[x][y]
+        print(board, "\n")
+        #print(curr_x, curr_y, x, y, lastPiece)
+        board[x][y], board[curr_x][curr_y] = board[curr_x][curr_y], 0
+        if abs(board[curr_x][curr_y]) == 6:
             if inCheck > 0:
-                white_king = [i[2], i[3]]
+                white_king = [x, y]
 
             else:
-                black_king = [i[2], i[3]]
+                black_king = [x, y]
 
-        Piece.placePiece(board, i[0], i[1], i[2], i[3], 0)
-
+    
+        
         inCheck = check(board, white_king, black_king)
         if inCheck != 0:
             count += 1
-    
+            #print(i, black_king)
 
-        if abs(board[i[0]][i[1]]) == 6:
+            
+
+        if abs(board[curr_x][curr_y]) == 6:
             if inCheck > 0:
-                white_king = [i[0], i[1]]
+                white_king = [curr_x, curr_y]
 
             else:
-                black_king = [i[0], i[1]]
+                black_king = [curr_x, curr_y]
             
-        Piece.placePiece(board, i[2], i[3], i[0], i[1], lastPiece)
+        Piece.placePiece(board, x, y, curr_x, curr_y, lastPiece)
 
     # Reseting the king's positions
-    white_king = white_kingPos
-    black_king = black_kingPos
     print(count, len(val))
     if count == len(val):
         return False
@@ -340,10 +342,43 @@ def main(white_king, black_king):
 
                         if inCheck != 0:
                             print("King in check")
-                            ch = checkmate(inCheck, board, white_king, black_king)
-                            if not ch:
-                                print("CHECKMATE")
+                            if inCheck > 0:
+                                val = validWhite(board)
+                            
+                            else:
+                                val = validBlack(board)
+
+                            count = 1
+                            # Looping through all the possible moves
+                            for i in val:   
+                                x1, y1, x2, y2 = i     
+                                last = board[x2][y2]                  
+                                
+                                if abs(board[x1][y1]) == 6:
+                                    if inCheck > 0:
+                                        white_king = [x2, y2]
+
+                                    elif inCheck < 0:
+                                        black_king = [x2, y2]  
+
+                                Piece.placePiece(board, x1, y1, x2, y2, 0)
+                                if abs(board[x2][y2]) == 6:
+                                    if inCheck > 0:
+                                        white_king = [x1, y1]
+
+                                    elif inCheck < 0:
+                                        black_king = [x1, y1]
+
+                                inCheck = check(board, white_king, black_king)
+                                if inCheck != 0:
+                                    count += 1
+                                                                  
+                                Piece.placePiece(board, x2, y2, x1, y1, last)
+
+                            # Reseting the king's positions
+                            if count == len(val):
                                 sys.exit()
+
 
                         if color == inCheck:
                             Piece.placePiece(board, x, y, curr_x, curr_y, lastPiece)

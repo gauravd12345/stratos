@@ -157,7 +157,6 @@ def validWhite(board):
                 curr = createPiece(board, board[i][j], i, j)
                 white += curr.validMoves()
                 
-    #print("White: \n", len(white), white)
     return white
 
 
@@ -170,7 +169,6 @@ def validBlack(board):
                 curr = createPiece(board, board[i][j], i, j)
                 black += curr.validMoves()
 
-    #print("Black: \n", len(black), black, "\n\n")
     return black
 
 
@@ -294,7 +292,6 @@ def main(white_king, black_king):
                         counter *= -1
 
                         if inCheck != 0:
-                            print("King in check")
                             if inCheck > 0:
                                 val = validWhite(board)
                             
@@ -341,9 +338,6 @@ def main(white_king, black_king):
                             pygame.mixer.Sound.play(chess_sound)
                             curr_piece = board[x][y]
 
-                        
-                    else:
-                        print("did not execute")
 
                 isClicked = False
         

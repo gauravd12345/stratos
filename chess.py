@@ -182,7 +182,7 @@ def validWhite(board):
                 curr = createPiece(board, board[i][j], i, j)
                 white += curr.validMoves()
                 
-    #print("White: \n", len(white), white)
+    print("White: \n", len(white), white)
     return white
 
 
@@ -195,7 +195,7 @@ def validBlack(board):
                 curr = createPiece(board, board[i][j], i, j)
                 black += curr.validMoves()
 
-    #print("Black: \n", len(black), black, "\n\n")
+    print("Black: \n", len(black), black, "\n\n")
     return black
 
 
@@ -314,8 +314,9 @@ def main(white_king, black_king):
                     board[curr_x][curr_y] = curr_piece           
                     if [curr_x, curr_y, x, y] in valid and color * counter > 0:
                         
-
                         # Place the piece
+                        Piece.placePiece(board, curr_x, curr_y, x, y)
+                        
                         if abs(curr_piece) == 6:
                             if color > 0:
                                 white_king = [x, y]
@@ -323,7 +324,7 @@ def main(white_king, black_king):
                             else:
                                 black_king = [x, y]
                                 
-                        Piece.placePiece(board, curr_x, curr_y, x, y)
+                        
                         
 
                         inCheck = check(board, white_king, black_king) 

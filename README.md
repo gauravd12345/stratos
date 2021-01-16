@@ -1,2 +1,2 @@
 # stratos
-A chess engine built using Python
+An open-source chess GUI built using python

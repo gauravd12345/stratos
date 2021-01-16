@@ -188,10 +188,10 @@ def checkmate(inCheck, board, white_king, black_king):
     white_kingPos = tuple(white_king)
     black_kingPos = tuple(black_king)
     if inCheck > 0:
-        val = validWhite(board)[::-1]
+        val = validWhite(board)
 
     else:
-        val = validBlack(board)[::-1]
+        val = validBlack(board)
 
     count = 0
     # Looping through all the possible moves
@@ -213,17 +213,17 @@ def checkmate(inCheck, board, white_king, black_king):
 
         if abs(board[i[0]][i[1]]) == 6:
             if inCheck > 0:
-                white_king = white_kingPos
+                white_king = [i[0], i[1]]
 
             else:
-                black_king = black_kingPos
+                black_king = [i[0], i[1]]
             
         Piece.placePiece(board, i[2], i[3], i[0], i[1], lastPiece)
 
     # Reseting the king's positions
     white_king = white_kingPos
     black_king = black_kingPos
-
+    print(count, len(val))
     if count == len(val):
         return False
 

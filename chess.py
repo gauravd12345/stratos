@@ -132,14 +132,14 @@ def flipBoard(board):
     board = newBoard
 """
 
-def createPiece(color, board, piece, x, y):
+def createPiece(board, piece, x, y):
     piece = abs(piece)
-    pieceMap = {1: Pawn(color, board, x, y),
-                2: Knight(color, board, x, y),
-                3: Bishop(color, board, x, y),
-                4: Rook(color, board, x, y),
-                5: Queen(color, board, x, y),
-                6: King(color, board, x, y)}
+    pieceMap = {1: Pawn(board, x, y),
+                2: Knight(board, x, y),
+                3: Bishop(board, x, y),
+                4: Rook(board, x, y),
+                5: Queen(board, x, y),
+                6: King(board, x, y)}
 
     return pieceMap[piece]
 
@@ -174,36 +174,37 @@ def availableBoxes(board):
 
 
 # Finds all the squares "protected" by white
-def validWhite(color, board):
+def validWhite(board):
     white = []
     for i in range(len(board)):
         for j in range(len(board[i])):
             if board[i][j] > 0:
-                curr = createPiece(color, board, board[i][j], i, j)
-                white += reduce(curr.validMoves())
+                curr = createPiece(board, board[i][j], i, j)
+                white += curr.validMoves()
                 
-
+    #print("White: \n", len(white), white)
     return white
 
 
 # Finds all the squares "protected" by black
-def validBlack(color, board):
+def validBlack(board):
     black = []
     for i in range(len(board)):
         for j in range(len(board[i])):
             if board[i][j] < 0:
-                curr = createPiece(color, board, board[i][j], i, j)
-                black += reduce(curr.validMoves())
+                curr = createPiece(board, board[i][j], i, j)
+                black += curr.validMoves()
 
+    #print("Black: \n", len(black), black, "\n\n")
     return black
 
 
 # Checks if either of the kings are in check
-def check(color, board, white_king, black_king):
-    if black_king in validWhite(color, board):
+def check(board, white_king, black_king):
+    if black_king in reduce(validWhite(board)):
         return -1
 
-    elif white_king in validBlack(color, board):
+    elif white_king in reduce(validBlack(board)):
             return 1
 
     return 0
@@ -321,32 +322,30 @@ def main(white_king, black_king):
 
                             else:
                                 black_king = [x, y]
+                                
                         Piece.placePiece(board, curr_x, curr_y, x, y)
                         
 
-                        inCheck = check(color, board, white_king, black_king) 
+                        inCheck = check(board, white_king, black_king) 
                         counter *= -1
-                        print(inCheck, color, white_king, black_king)
-                        #print(validWhite(color, board)) 
-                        #print(curr_piece) 
+
                         if inCheck == 0:
                             pygame.mixer.Sound.play(chess_sound)
                             curr_piece = board[x][y]
                         
                         else:
                             
-                                print("invalid")
-                                # Reverses the move if a side is putting themselves in check
-                                Piece.placePiece(board, x, y, curr_x, curr_y)
-                                if abs(curr_piece) == 6:
-                                    if color > 0:
-                                        white_king = [x, y]
+                            print("invalid")
+                            # Reverses the move if a side is putting themselves in check
+                            Piece.placePiece(board, x, y, curr_x, curr_y)
+                            if abs(curr_piece) == 6:
+                                if color > 0:
+                                    white_king = [x, y]
 
-                                    else:
-                                        black_king = [x, y]
-                                counter *= -1
+                                else:
+                                    black_king = [x, y]
+                            counter *= -1
 
-                            #print("King in check")
 
                         
                     else:
@@ -355,10 +354,11 @@ def main(white_king, black_king):
  
         
         # If the mouse button is clicked
-        if isClicked: 
-            board[curr_x][curr_y] = 0
-            curr = createPiece(color, board, curr_piece, curr_x, curr_y)       
+        if isClicked:    
+            board[curr_x][curr_y] = curr_piece   
+            curr = createPiece(board, curr_piece, curr_x, curr_y)   
             valid = curr.validMoves()
+            board[curr_x][curr_y] = 0    
 
             # Using drag n' drop functionality to move the piece
             movePiece(curr_piece)

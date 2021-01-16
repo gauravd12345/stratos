@@ -1,10 +1,12 @@
 # Setting up a Piece class
 class Piece:
-    def __init__(self, color, board, x, y):
-        self.color = color
+    def __init__(self, board, x, y):
+        self.color = abs(board[x][y]) // board[x][y]
         self.board = board
         self.x = x
         self.y = y
+        
+
 
     
     # Getter function
@@ -35,7 +37,7 @@ class Pawn(Piece):
         for z in range(1, end):
 
             # Only checking for vertical moves
-            if color > 0:
+            if board[x][y] > 0:
                 new_x = x - z
             
             else:
@@ -84,7 +86,7 @@ class Bishop(Piece):
 
         try:
             # Top Left Diagonal
-            for i in range(x + 1):
+            for i in range(x - 1):
                 if [x, y] != [x - i, y - i]:
                     result = board[x - i][y - i] * color
                     if result <= 0:
@@ -99,7 +101,7 @@ class Bishop(Piece):
             pass
         try:            
             # Top Right Diagonal
-            for i in range(x + 1):     
+            for i in range(x - 1):     
                 if [x, y] != [x - i, y + i]:
                     result = board[x - i][y + i] * color
                     if result <= 0:
@@ -147,7 +149,7 @@ class Rook(Piece):
     def validMoves(self):
         color, board, x, y = Piece.getVar(self)
         validList = []
-
+        
         # Left Horizontal
         for i in range(y + 1):
             if [x, y] != [x, y - i]:
@@ -202,8 +204,8 @@ class Rook(Piece):
 class Queen(Piece):
     def validMoves(self):
         color, board, x, y = Piece.getVar(self)
-        b = Bishop(color, board, x, y)
-        r = Rook(color, board, x, y)
+        b = Bishop(board, x, y)
+        r = Rook(board, x, y)
 
         return b.validMoves() + r.validMoves()
 

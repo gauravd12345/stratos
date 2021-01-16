@@ -2,6 +2,7 @@ Things to work on
 
     En Passant
     Castling
+    Check
     Checkmate
     Stalemate
     AI

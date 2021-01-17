@@ -177,8 +177,8 @@ def check(board, white_king, black_king):
     if black_king in reduce(validWhite(board)):
         return -1
 
-    elif white_king in reduce(validBlack(board)):
-            return 1
+    if white_king in reduce(validBlack(board)):
+        return 1
 
     return 0
 
@@ -277,10 +277,7 @@ def main(white_king, black_king):
                     board[curr_x][curr_y] = curr_piece 
                     lastPiece = board[x][y]          
                     if [curr_x, curr_y, x, y] in valid and color * counter > 0:
-                        
-                        # Place the piece
-                        Piece.placePiece(board, curr_x, curr_y, x, y, 0)
-                        
+                        # Place the piece 
                         if abs(curr_piece) == 6:
                             if color > 0:
                                 white_king = [x, y]
@@ -288,6 +285,7 @@ def main(white_king, black_king):
                             else:
                                 black_king = [x, y]
                                 
+                        Piece.placePiece(board, curr_x, curr_y, x, y, 0)        
                         inCheck = check(board, white_king, black_king) 
                         counter *= -1
 
@@ -298,34 +296,48 @@ def main(white_king, black_king):
                             else:
                                 val = validBlack(board)
 
-                            count = 1
+                            count = 0
+
                             # Looping through all the possible moves
                             for i in val:   
                                 x1, y1, x2, y2 = i     
-                                last = board[x2][y2]                  
-                                
-                                if abs(board[x1][y1]) == 6:
-                                    if inCheck > 0:
-                                        white_king = [x2, y2]
-
-                                    elif inCheck < 0:
-                                        black_king = [x2, y2]  
-
+                                last = board[x2][y2]   
                                 Piece.placePiece(board, x1, y1, x2, y2, 0)
                                 if abs(board[x2][y2]) == 6:
-                                    if inCheck > 0:
-                                        white_king = [x1, y1]
+                                    if color < 0:
+                                        white_king = [x2, y2]
+                                        #print("White_king", white_king)
 
-                                    elif inCheck < 0:
-                                        black_king = [x1, y1]
-
+                                    elif color > 0:
+                                        black_king = [x2, y2]  
+                                        #print("Black_king", black_king)
+                                    
+                                    #else:
+                                        #print(i)
+                                    #print(white_king, black_king)
+                                
                                 inCheck = check(board, white_king, black_king)
                                 if inCheck != 0:
                                     count += 1
-                                                                  
+                                
+                                else:
+                                    print(i)
+
                                 Piece.placePiece(board, x2, y2, x1, y1, last)
+                                if abs(board[x1][y1]) == 6:
+                                    if color < 0:
+                                        white_king = [x1, y1]
+                                        #print("White_king", white_king)            
+                                    elif color > 0:
+                                        black_king = [x1, y1]
+                                        #print("Black_king", black_king)
+                                                                                       
+                                    #else:
+                                        #print(i)
+                                    #print(white_king, black_king)
 
                             # Reseting the king's positions
+                            print(count, len(val))
                             if count == len(val):
                                 sys.exit()
 

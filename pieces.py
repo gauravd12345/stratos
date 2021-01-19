@@ -6,15 +6,16 @@ class Piece:
         self.board = board
         self.x = x
         self.y = y
-    
+
     # Getter function
     def getVar(self):
         return self.color, self.board, self.x, self.y
 
-
     # Places a piece on the board
+
     def placePiece(board, x1, y1, x2, y2, piece):
         board[x2][y2], board[x1][y1] = board[x1][y1], piece
+
 
 # Pawn class
 class Pawn(Piece):
@@ -28,7 +29,7 @@ class Pawn(Piece):
         validList = []
         if x == 1 or x == 6:
             end = 3
-        
+
         else:
             end = 2
 
@@ -37,7 +38,7 @@ class Pawn(Piece):
             # Only checking for vertical moves
             if board[x][y] > 0:
                 new_x = x - z
-            
+
             else:
                 new_x = x + z
 
@@ -46,7 +47,7 @@ class Pawn(Piece):
 
             else:
                 break
-        
+
         # Pawn capture functionality(checks left and right positions)
         try:
             if x - color > 0:
@@ -61,6 +62,7 @@ class Pawn(Piece):
             pass
 
         return validList
+
 
 # Knight Class
 class Knight(Piece):
@@ -81,6 +83,7 @@ class Knight(Piece):
 
         return validList
 
+
 # Bishop class
 class Bishop(Piece):
     # Checks valid moves in 4 different steps
@@ -96,7 +99,7 @@ class Bishop(Piece):
                         result = board[x - i][y - i] * color
                         if result <= 0:
                             validList.append([x, y, x - i, y - i])
-                            if result < 0:               
+                            if result < 0:
                                 break
 
                         else:
@@ -107,9 +110,9 @@ class Bishop(Piece):
 
         except:
             pass
-        try:            
+        try:
             # Top Right Diagonal
-            for i in range(8 - y):     
+            for i in range(8 - y):
                 if [x, y] != [x - i, y + i]:
                     if x - i >= 0 and y + i >= 0:
                         result = board[x - i][y + i] * color
@@ -127,7 +130,7 @@ class Bishop(Piece):
             pass
         try:
             # Bottom Left Diagonal
-            for i in range(y + 1):         
+            for i in range(y + 1):
                 if [x, y] != [x + i, y - i]:
                     if x + i >= 0 and y - i >= 0:
                         result = board[x + i][y - i] * color
@@ -138,13 +141,13 @@ class Bishop(Piece):
 
                         else:
                             break
-                    
+
                     else:
                         break
 
         except:
-            pass    
-        try:    
+            pass
+        try:
             # Bottom Right Diagonal
             for i in range(8 - y):
                 result = board[x + i][y + i] * color
@@ -164,13 +167,14 @@ class Bishop(Piece):
             pass
         return validList
 
+
 # Rook class
 class Rook(Piece):
     # Checks valid moves in 4 different steps
     def validMoves(self):
         color, board, x, y = Piece.getVar(self)
         validList = []
-        
+
         # Left Horizontal
         for i in range(y + 1):
             if [x, y] != [x, y - i]:
@@ -178,15 +182,15 @@ class Rook(Piece):
                     result = board[x][y - i] * color
                     if result <= 0:
                         validList.append([x, y, x, y - i])
-                        if result < 0:               
+                        if result < 0:
                             break
 
                     else:
                         break
-                
+
                 else:
                     break
-                
+
         # Right Horizontal
         for i in range(8 - y):
             if [x, y] != [x, y + i]:
@@ -194,7 +198,7 @@ class Rook(Piece):
                     result = board[x][y + i] * color
                     if result <= 0:
                         validList.append([x, y, x, y + i])
-                        if result < 0:               
+                        if result < 0:
                             break
 
                     else:
@@ -210,7 +214,7 @@ class Rook(Piece):
                 if x - i >= 0:
                     if result <= 0:
                         validList.append([x, y, x - i, y])
-                        if result < 0:               
+                        if result < 0:
                             break
 
                     else:
@@ -226,7 +230,7 @@ class Rook(Piece):
                 if x + i >= 0:
                     if result <= 0:
                         validList.append([x, y, x + i, y])
-                        if result < 0:               
+                        if result < 0:
                             break
 
                     else:
@@ -236,6 +240,7 @@ class Rook(Piece):
                     break
 
         return validList
+
 
 # Queen class
 class Queen(Piece):
@@ -247,6 +252,7 @@ class Queen(Piece):
 
         return b.validMoves() + r.validMoves()
 
+
 # King class
 class King(Piece):
     # Checks one spot in each direction around the king
@@ -256,14 +262,14 @@ class King(Piece):
         cor1, cor2 = x - 1, y - 1
         for i in range(3):
             for j in range(3):
-                if 0 <= cor1 <= 7 and 0 <= cor2 <= 7: 
+                if 0 <= cor1 <= 7 and 0 <= cor2 <= 7:
                     if board[cor1][cor2] * color <= 0:
                         if [cor1, cor2] != [x, y]:
                             validList.append([x, y, cor1, cor2])
 
                 cor2 += 1
 
-            cor1 += 1 
-            cor2 = y - 1   
+            cor1 += 1
+            cor2 = y - 1
 
-        return validList        
+        return validList

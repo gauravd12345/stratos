@@ -319,7 +319,8 @@ def main(white_king, black_king):
                                 if abs(board[x1][y1]) == 6:
                                     if color < 0:
                                         white_king = [x1, y1]
-                                        #print("White_king", white_king)                                      elif color > 0:
+
+                                    elif color > 0:
                                         black_king = [x1, y1]
 
 

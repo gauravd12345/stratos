@@ -1,6 +1,7 @@
 import os
 import sys
 import pygame
+from pygame.constants import AUDIO_ALLOW_CHANNELS_CHANGE
 from pieces import Piece, Pawn, Knight, Bishop, Rook, Queen, King
 
 pygame.init()
@@ -53,9 +54,10 @@ white_king = [7, 4]
 black_king = [0, 4]
 
 # Creates out the chess board
-def createBoard(board, validlist):
+def createBoard(board, white_king, black_king, validlist):
     win.blit(chessBoard, (0, 0))
     highlightValid(validlist)
+    highlightCheck(board, white_king, black_king)
     for i in range(len(board)):
         for j in range(len(board[i])):
 
@@ -66,6 +68,17 @@ def createBoard(board, validlist):
 
             elif board[i][j] < 0: 
                 win.blit(black_pieces[piece], (j * mod, i * mod))
+
+
+# Highlights the king if it is in check
+def highlightCheck(board, white_king, black_king):
+    inCheck = check(board, white_king, black_king)
+    if inCheck != 0:
+        if inCheck == 1:
+            highlightRect(RED, white_king[0], white_king[1])
+
+        elif inCheck == -1:
+            highlightRect(RED, black_king[0], black_king[1])
 
 
 # Returns mouse coordinates
@@ -96,8 +109,8 @@ def movePiece(piece):
 
 
 # Animation for highliting a rectangle
-def highlightRect(x, y):
-    pygame.draw.rect(win, YELLOW, (y * mod, x * mod, mod, mod))
+def highlightRect(col, x, y):
+    pygame.draw.rect(win, col, (y * mod, x * mod, mod, mod))
     if abs(x - y) % 2 == 0:
         pygame.draw.rect(win, TAN, (y * mod + 3, x * mod + 3, mod - 6, mod - 6))
 
@@ -111,7 +124,7 @@ def highlightValid(validlist):
         return
 
     for i in range(len(validlist)):
-        highlightRect(validlist[i][2], validlist[i][3])
+        highlightRect(YELLOW, validlist[i][2], validlist[i][3])
 
 # Creates a piece with defined properties
 # See "Pieces" class
@@ -244,7 +257,7 @@ def main(white_king, black_king):
     while running:
 
         # Stuff that will run in the background   
-        createBoard(board, valid)     
+        createBoard(board, white_king, black_king, valid)     
         piece = pieceUnderMouse(board) 
         if curr_piece != 0:
             color = curr_piece // abs(curr_piece)
@@ -337,7 +350,6 @@ def main(white_king, black_king):
 
                                     elif color > 0:
                                         black_king = [x1, y1]
-
 
                             # Checking for checkmate
                             if count == len(val):

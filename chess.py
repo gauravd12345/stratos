@@ -1,5 +1,6 @@
-import pygame
+import os
 import sys
+import pygame
 from pieces import Piece, Pawn, Knight, Bishop, Rook, Queen, King
 
 pygame.init()
@@ -9,7 +10,10 @@ pygame.mixer.init()
 screen_width = 600
 screen_height = 600
 mod = (screen_height + screen_width) // 16
-chess_sound = pygame.mixer.Sound("sounds/Chess_Move.wav")
+
+# Loading sounds
+move_sound = pygame.mixer.Sound("sounds\move.wav")
+capture_sound = pygame.mixer.Sound("sounds\capture.wav")
 
 # Colors
 RED = (255, 0, 0, 50)
@@ -269,7 +273,7 @@ def main(white_king, black_king):
                     # Animation stuff 
                     board[curr_x][curr_y] = curr_piece 
                     lastPiece = board[x][y]  
-
+                    capture = board[x][y]
                     # Checks if the desired move is valid        
                     if [curr_x, curr_y, x, y] in valid and color * counter > 0:
                         # Update the king's positions
@@ -351,7 +355,11 @@ def main(white_king, black_king):
                             if cm:
                                 sys.exit()
 
-                            pygame.mixer.Sound.play(chess_sound)
+                            if capture == 0:
+                                pygame.mixer.Sound.play(move_sound)
+
+                            else:
+                                pygame.mixer.Sound.play(capture_sound)
                             curr_piece = board[x][y]
 
                         

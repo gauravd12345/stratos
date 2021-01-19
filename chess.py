@@ -325,7 +325,6 @@ def main(white_king, black_king):
 
 
                             # Reseting the king's positions
-                            print(count, len(val))
                             if count == len(val):
                                 cm = True
 
@@ -337,11 +336,13 @@ def main(white_king, black_king):
                             counter *= -1
 
                         elif color != inCheck:
+                            if cm:
+                                sys.exit()
+
                             pygame.mixer.Sound.play(chess_sound)
                             curr_piece = board[x][y]
 
-                        elif cm:
-                            sys.exit()
+                        
 
                 isClicked = False
         

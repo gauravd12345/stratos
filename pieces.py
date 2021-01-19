@@ -16,7 +16,7 @@ class Piece:
     def placePiece(board, x1, y1, x2, y2, piece):
         board[x2][y2], board[x1][y1] = board[x1][y1], piece
 
-
+# Pawn class
 class Pawn(Piece):
 
     # Generates valid moves for a pawn
@@ -62,6 +62,7 @@ class Pawn(Piece):
 
         return validList
 
+# Knight Class
 class Knight(Piece):
     def validMoves(self):
         color, board, x, y = Piece.getVar(self)
@@ -80,7 +81,7 @@ class Knight(Piece):
 
         return validList
 
-
+# Bishop class
 class Bishop(Piece):
     # Checks valid moves in 4 different steps
     def validMoves(self):
@@ -163,7 +164,7 @@ class Bishop(Piece):
             pass
         return validList
 
-
+# Rook class
 class Rook(Piece):
     # Checks valid moves in 4 different steps
     def validMoves(self):
@@ -236,7 +237,7 @@ class Rook(Piece):
 
         return validList
 
-
+# Queen class
 class Queen(Piece):
     # Uses the previously defined bishop and rook functions
     def validMoves(self):
@@ -246,7 +247,7 @@ class Queen(Piece):
 
         return b.validMoves() + r.validMoves()
 
-
+# King class
 class King(Piece):
     # Checks one spot in each direction around the king
     def validMoves(self):

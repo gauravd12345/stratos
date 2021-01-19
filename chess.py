@@ -44,7 +44,7 @@ black_pieces = [pygame.image.load("img/black_pieces/bP.png"),
                 pygame.image.load("img/black_pieces/bK.png")]
 
 
-
+# Defines each king's position throughout the game
 white_king = [7, 4]
 black_king = [0, 4]
 
@@ -91,6 +91,7 @@ def movePiece(piece):
             black_pieces[abs(piece) - 1].get_rect(center=pos))
 
 
+# Animation for highliting a rectangle
 def highlightRect(x, y):
     pygame.draw.rect(win, YELLOW, (y * mod, x * mod, mod, mod))
     if abs(x - y) % 2 == 0:
@@ -100,6 +101,7 @@ def highlightRect(x, y):
         pygame.draw.rect(win, DARK_TAN, (y * mod + 3, x * mod + 3, mod - 6, mod - 6))
 
 
+# Highlights all the valid moves for a side
 def highlightValid(validlist):
     if not validlist:
         return
@@ -107,7 +109,8 @@ def highlightValid(validlist):
     for i in range(len(validlist)):
         highlightRect(validlist[i][2], validlist[i][3])
 
-
+# Creates a piece with defined properties
+# See "Pieces" class
 def createPiece(board, piece, x, y):
     piece = abs(piece)
     pieceMap = {1: Pawn(board, x, y),
@@ -119,34 +122,21 @@ def createPiece(board, piece, x, y):
 
     return pieceMap[piece]
 
-
+# Checks if a pawn can promote
 def canPromote(x):
     if x == 0 or x == 7:
         return True
     
     return False
 
-
+# Shortens the piece coordinates
+# Ex: [x1, y1, x2, y2] --> [x2, y2]
 def reduce(validlist):
     newList = []
     for i in validlist:
         newList.append([i[2], i[3]])
 
     return newList
-
-
-def availableBoxes(board):
-    for i in range(len(board)):
-        for j in range(len(board[i])):
-
-            # Checks if the piece is black or white
-            piece = board[i][j]
-            if piece > 0: 
-                pygame.draw.rect(win, BLACK, (j * mod, i * mod, mod, mod))
-
-            elif piece < 0: 
-                pygame.draw.rect(win, WHITE, (j * mod, i * mod, mod, mod))
-
 
 # Finds all the squares "protected" by white
 def validWhite(board):
@@ -223,7 +213,7 @@ def main(white_king, black_king):
       Negative values indicate black pieces
 
     '''
-
+     # Chess board
     board = [[-4, -2, -3, -5, -6, -3, -2, -4],
              [-1, -1, -1, -1, -1, -1, -1, -1],
              [ 0,  0,  0,  0,  0,  0,  0,  0],
@@ -257,7 +247,8 @@ def main(white_king, black_king):
         x, y = getMousePos() 
 
         for event in pygame.event.get():
-
+            
+            # Exits program
             if event.type == pygame.QUIT:
                 running = False
             
@@ -275,10 +266,13 @@ def main(white_king, black_king):
             if event.type == pygame.MOUSEBUTTONUP:
                 
                 if isClicked:
+                    # Animation stuff 
                     board[curr_x][curr_y] = curr_piece 
-                    lastPiece = board[x][y]          
+                    lastPiece = board[x][y]  
+
+                    # Checks if the desired move is valid        
                     if [curr_x, curr_y, x, y] in valid and color * counter > 0:
-                        # Place the piece 
+                        # Update the king's positions
                         if abs(curr_piece) == 6:
                             if color > 0:
                                 white_king = [x, y]
@@ -291,6 +285,12 @@ def main(white_king, black_king):
                         counter *= -1
 
                         if inCheck != 0:
+                            """
+                            This part checks if there is a checkmate or not
+
+                            It looks one move into the future to determine if 
+                            a side has any possible moves that can be played
+                            """
                             if inCheck > 0:
                                 val = validWhite(board)
                             
@@ -301,8 +301,18 @@ def main(white_king, black_king):
 
                             # Looping through all the possible moves
                             for i in val:   
+
                                 x1, y1, x2, y2 = i     
-                                last = board[x2][y2]   
+                                last = board[x2][y2] 
+
+                                """
+                                Here, we simulate all the possible moves that a side can
+                                play by taking its "validMove" list and placing all of the 
+                                moves on the board, one by one.
+
+                                We then check if the king is in check if that move is played
+                                and then reset the move so as to not disturb the game   
+                                """  
                                 Piece.placePiece(board, x1, y1, x2, y2, 0)
                                 if abs(board[x2][y2]) == 6:
                                     if color < 0:
@@ -314,7 +324,8 @@ def main(white_king, black_king):
                                 inCheck = check(board, white_king, black_king)
                                 if inCheck != 0:
                                     count += 1
-
+                                
+                                # Reseting the moves
                                 Piece.placePiece(board, x2, y2, x1, y1, last)
                                 if abs(board[x1][y1]) == 6:
                                     if color < 0:
@@ -324,13 +335,14 @@ def main(white_king, black_king):
                                         black_king = [x1, y1]
 
 
-                            # Reseting the king's positions
+                            # Checking for checkmate
                             if count == len(val):
                                 cm = True
 
                             else:
                                 cm = False
-
+                        
+                        # If a side puts itself in check
                         if color == inCheck:
                             Piece.placePiece(board, x, y, curr_x, curr_y, lastPiece)
                             counter *= -1

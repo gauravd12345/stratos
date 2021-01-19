@@ -1,11 +1,13 @@
 # Setting up a Piece class
 class Piece:
+    # Initilzation function
     def __init__(self, board, x, y):
         self.color = abs(board[x][y]) // board[x][y]
         self.board = board
         self.x = x
         self.y = y
     
+    # Getter function
     def getVar(self):
         return self.color, self.board, self.x, self.y
 
@@ -64,6 +66,8 @@ class Knight(Piece):
     def validMoves(self):
         color, board, x, y = Piece.getVar(self)
         validList = []
+
+        # Checks valid moves by looping through the entire board
         for i in range(len(board)):
             for j in range(len(board[i])):
                 if abs(i - x) == 1 and abs(j - y) == 2:
@@ -78,6 +82,7 @@ class Knight(Piece):
 
 
 class Bishop(Piece):
+    # Checks valid moves in 4 different steps
     def validMoves(self):
         color, board, x, y = Piece.getVar(self)
         validList = []
@@ -160,6 +165,7 @@ class Bishop(Piece):
 
 
 class Rook(Piece):
+    # Checks valid moves in 4 different steps
     def validMoves(self):
         color, board, x, y = Piece.getVar(self)
         validList = []
@@ -232,6 +238,7 @@ class Rook(Piece):
 
 
 class Queen(Piece):
+    # Uses the previously defined bishop and rook functions
     def validMoves(self):
         color, board, x, y = Piece.getVar(self)
         b = Bishop(board, x, y)
@@ -241,6 +248,7 @@ class Queen(Piece):
 
 
 class King(Piece):
+    # Checks one spot in each direction around the king
     def validMoves(self):
         color, board, x, y = Piece.getVar(self)
         validList = []

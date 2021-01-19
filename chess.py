@@ -188,8 +188,25 @@ def check(board, white_king, black_king):
         return 1
 
     return 0
-
+"""
+def castle():
     
+    # Black side castling
+    if x == 0:
+        if board[x][y - 1] == 0 and board[x][y - 2] == 0 and board[x][y - 3] == 0:
+            validList.append([x, y, x, y - 2])
+
+        if board[x][y + 1] == 0 and board[x][y + 2] == 0:
+            validList.append([x, y, x, y + 2])
+
+    # White side castling
+    if x == 7:
+        if board[x][y + 1] == 0 and board[x][y + 2] == 0:
+            validList.append([x, y, x, y + 2])
+
+        if board[x][y - 1] == 0 and board[x][y - 2] == 0 and board[x][y - 3] == 0:
+            validList.append([x, y, x, y - 2])  
+"""
 '''
 # Creates a short "animation" for promotion
 def promoteBox(color):
@@ -248,9 +265,10 @@ def main(white_king, black_king):
     curr = 0
     color = 1
     valid = []
-    curr_piece = 10
-    counter = 1
     cm = False
+    counter = 1
+    curr_piece = 10
+    canCastle = False
     curr_x, curr_y = 10, 10
 
     # Setting a gameloop
@@ -288,7 +306,7 @@ def main(white_king, black_king):
                     lastPiece = board[x][y]  
                     capture = board[x][y]
                     # Checks if the desired move is valid        
-                    if [curr_x, curr_y, x, y] in valid and color * counter > 0:
+                    if [curr_x, curr_y, x, y] in valid:
                         # Update the king's positions
                         if abs(curr_piece) == 6:
                             if color > 0:

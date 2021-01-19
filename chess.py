@@ -243,6 +243,7 @@ def main(white_king, black_king):
     valid = []
     curr_piece = 10
     counter = 1
+    cm = False
     curr_x, curr_y = 10, 10
 
     # Setting a gameloop
@@ -306,50 +307,40 @@ def main(white_king, black_king):
                                 if abs(board[x2][y2]) == 6:
                                     if color < 0:
                                         white_king = [x2, y2]
-                                        #print("White_king", white_king)
 
                                     elif color > 0:
                                         black_king = [x2, y2]  
-                                        #print("Black_king", black_king)
-                                    
-                                    #else:
-                                        #print(i)
-                                    #print(white_king, black_king)
                                 
                                 inCheck = check(board, white_king, black_king)
                                 if inCheck != 0:
                                     count += 1
-                                
-                                else:
-                                    print(i)
 
                                 Piece.placePiece(board, x2, y2, x1, y1, last)
                                 if abs(board[x1][y1]) == 6:
                                     if color < 0:
                                         white_king = [x1, y1]
-                                        #print("White_king", white_king)            
-                                    elif color > 0:
+                                        #print("White_king", white_king)                                      elif color > 0:
                                         black_king = [x1, y1]
-                                        #print("Black_king", black_king)
-                                                                                       
-                                    #else:
-                                        #print(i)
-                                    #print(white_king, black_king)
+
 
                             # Reseting the king's positions
                             print(count, len(val))
                             if count == len(val):
-                                sys.exit()
+                                cm = True
 
+                            else:
+                                cm = False
 
                         if color == inCheck:
                             Piece.placePiece(board, x, y, curr_x, curr_y, lastPiece)
                             counter *= -1
 
-                        else:
+                        elif color != inCheck:
                             pygame.mixer.Sound.play(chess_sound)
                             curr_piece = board[x][y]
 
+                        elif cm:
+                            sys.exit()
 
                 isClicked = False
         
